@@ -1,4 +1,4 @@
-# hoteis-flask-rest-api - Desvtição do projeto:
+# hoteis-flask-rest-api - Descrição do projeto:
 
 Esse é um curso completo de Flask REST API da Udemy com integração com banco de dados relacionais (PostgreSQL e MySQL),  Autenticação com JWT, Cadastro com confirmação por e-mail, AWS, GCP, Heroku e testes com Postman e pretendo implementar também testes unitários com Unittest e Pytest e de integração com TravisCI e por último mas não menos importante, Docker/ docker-compose.
 

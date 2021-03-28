@@ -8,6 +8,7 @@ Esse é um curso completo de Flask REST API da Udemy com integração com banco 
 - Python
 - Flask-Restful
 - PostgreSQL
+- Flask-SQLAlchemy
 - ...
 
 # Comandos usados no console/terminal:

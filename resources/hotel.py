@@ -32,8 +32,9 @@ class Hoteis(Resource):
 
 class Hotel(Resource):
     """
-        Construtor que utiliza o reqparser para analisar as requisições
-        e garantir que somente o que é necessário será aceito. 
+        Classe com Construtor como atributos de classe que utiliza o reqparser
+        para analisar as requisições e garantir que somente o que é necessário
+        será aceito. 
     """
     argumentos = reqparse.RequestParser()
     argumentos.add_argument('nome')
@@ -66,17 +67,19 @@ class Hotel(Resource):
         # novo_hotel = { 'hotel_id': hotel_id, **dados }
 
         # bloco de refatoração que substitui o bloco acima comentado
-        dados = Hotel.atributos.parse.args()
+        dados = Hotel.atributos.parse_args()
         hotel_objeto = HotelModel(hotel_id, **dados)
         novo_hotel = hotel_objeto.json()
+
+        # continuação de ambos ou qualquer um dos blocos acima na classe post
         hoteis.append(novo_hotel)
         return novo_hotel, 201
 
     def put(self, hotel_id):
-        dados = Hotel.argumentos.parse_args()
-        # novo_hotel = { 'hotel_id': hotel_id, **dados } #substuido por:
-        hotel_objeto = HotelModel(hotel_id, **dados)  #essa e...
-        novo_hotel = hotel_objeto.json()              #...essa linha tbm como no post 
+        dados = Hotel.atributos.parse_args()
+        # novo_hotel = { 'hotel_id': hotel_id, **dados } #substituído por...:
+        hotel_objeto = HotelModel(hotel_id, **dados)     #...essa e...
+        novo_hotel = hotel_objeto.json()                 #...essa linha tbm como no post 
         hotel = Hotel.find_hotel(hotel_id)
         if hotel:
             hotel.update(novo_hotel)

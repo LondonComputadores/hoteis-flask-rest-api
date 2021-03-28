@@ -19,11 +19,13 @@ Esse é um curso completo de Flask REST API da Udemy com integração com banco 
 - pip install flask-restful
 - pip freeze > requirements.txt
 - python app.py
+- python cria_banco.py
+- pip install flask-SQLAlchemy
 
 # Endpoints:
 
 - /hoteis
-- /hotel/str:hotel_id
+- /hoteis/str:hotel_id
 
 # Referências:
 

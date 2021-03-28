@@ -12,6 +12,10 @@ Esse é um curso completo de Flask REST API da Udemy com integração com banco 
 
 # Comandos usados no console/terminal:
 
+- python --version   ## Output: python3.8
+- alias python python-python3.9   ## Wanted to use python3.9 for a change
+- python3.9 -m venv venv39
+- source venv39/bin/activate
 - pip install flask-restful
 - pip freeze > requirements.txt
 - python app.py

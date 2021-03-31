@@ -27,7 +27,7 @@ hoteis = [
 
 class Hoteis(Resource):
     def get(self):
-        return {'hoteis': hoteis}
+        return {'hoteis': [hotel.json() for hotel in HotelModel.query.all()]}
 
 
 class Hotel(Resource):
@@ -37,46 +37,49 @@ class Hotel(Resource):
         será aceito. 
     """
     argumentos = reqparse.RequestParser()
-    argumentos.add_argument('nome')
-    argumentos.add_argument('estrelas')
+    argumentos.add_argument('nome', type=str ,required=True, help="This field 'nome' cannot be Blank")
+    argumentos.add_argument('estrelas', type=float, required=True, help="This field 'estrelas' cannot be Blank")
     argumentos.add_argument('diaria')
     argumentos.add_argument('cidade')
 
-    def find_hotel(hotel_id):
-        for hotel in hoteis:
-            if hotel['hotel_id'] == hotel_id:
-                return hotel
-        return None
-
     def get(self, hotel_id):
-        hotel = Hotel.find_hotel(hotel_id)
+        hotel = HotelModel.find_hotel(hotel_id)
         if hotel:
-            return hotel
+            return hotel.json()
         return {'message': 'Hotel not found!'}, 404
 
     def post(self, hotel_id):
+        if HotelModel.find_hotel(hotel_id):
+            return {"message": f"Hotel id {hotel_id} already exists."}, 400
+
         dados = Hotel.atributos.parse_args()
-        hotel_objeto = HotelModel(hotel_id, **dados)
-        novo_hotel = hotel_objeto.json()
-        hoteis.append(novo_hotel)
-        return novo_hotel, 201
+        hotel = HotelModel(hotel_id, **dados)
+        try:
+            hotel.save_hotel()
+        except:
+            return {'message': 'An internal error ocurred trying to save the hotel.'}, 500
+        return hotel.json(), 201
 
     def put(self, hotel_id):
-        dados = Hotel.atributos.parse_args()
-        hotel_objeto = HotelModel(hotel_id, **dados)
-        novo_hotel = hotel_objeto.json() 
-        hotel = Hotel.find_hotel(hotel_id)
-        if hotel:
-            hotel.update(novo_hotel)
-            return novo_hotel, 200
-        hoteis.append(novo_hotel)
-        return novo_hotel, 201
+        dados = Hotel.atributos.parse_args() 
+        hotel_encontrado = HotelModel.find_hotel(hotel_id)
+        if hotel_encontrado:
+            hotel_encontrado.update_hotel(**dados)
+            hotel_encontrado.save_hotel()
+            return hotel_encontrado.json(), 200
+        hotel = HotelModel(hotel_id, **dados)
+        try:
+            hotel.save_hotel()
+        except:
+            return {'message': 'An internal error ocurred trying to save the hotel.'}, 500
+        return hotel.json(), 201
 
     def delete(self, hotel_id):
-        """
-            Usar global para que o python não confunda a variável hotel abaixo
-            com o list comprehend como uma nova variável e não a já existente.
-        """
-        global hoteis
-        hoteis = [hotel for hotel in hoteis if hotel['hotel_id'] != hotel_id]
-        return {'message': 'Hotel deleted.'}
+        hotel = HotelModel.find_hotel(hotel_id)
+        if hotel:
+            try:
+                hotel.delete_hotel()
+            except:
+                return {'message': 'An internal error ocurred trying to delete the hotel.'}, 500
+            return {'message': 'Hotel deleted.'}
+        return {'message': 'Hotel not found.'}, 404

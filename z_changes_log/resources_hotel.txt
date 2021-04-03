@@ -115,6 +115,22 @@ def put(self, hotel_id):
 
 ##############################################################################
 
+def put(self, hotel_id):
+        dados = Hotel.atributos.parse_args() 
+        hotel_encontrado = HotelModel.find_hotel(hotel_id)
+        if hotel_encontrado:
+            hotel_encontrado.update_hotel(**dados)
+            hotel_encontrado.save_hotel()
+            return hotel_encontrado.json(), 200
+        hotel = HotelModel(hotel_id, **dados)
+        try:
+            hotel.save_hotel()
+        except:
+            return {'message': 'An internal error ocurred trying to save the hotel.'}, 500
+        return hotel.json(), 201
+
+##############################################################################
+
 # antes de refatorar o delete em resources/hotel.py
 
 def delete(self, hotel_id):
@@ -125,3 +141,43 @@ def delete(self, hotel_id):
         global hoteis
         hoteis = [hotel for hotel in hoteis if hotel['hotel_id'] != hotel_id]
         return {'message': 'Hotel deleted.'}
+
+##############################################################################
+
+def delete(self, hotel_id):
+        hotel = HotelModel.find_hotel(hotel_id)
+        if hotel:
+            try:
+                hotel.delete_hotel()
+            except:
+                return {'message': 'An internal error ocurred trying to delete the hotel.'}, 500
+            return {'message': 'Hotel deleted.'}
+        return {'message': 'Hotel not found.'}, 404
+
+##############################################################################
+
+hoteis = [
+    {
+        'hotel_id': 'alpha',
+        'nome': 'Alpha Hotel',
+        'estrelas': 4.3,
+        'diaria': 420.34,
+        'cidade': 'Rio de Janeiro'
+    },
+    {
+        'hotel_id': 'bravo',
+        'nome': 'Bravo Hotel',
+        'estrelas': 3.7,
+        'diaria': 380.34,
+        'cidade': 'Florianopolis'
+    },
+    {
+        'hotel_id': 'espelunca',
+        'nome': 'Espelunca Hotel',
+        'estrelas': 2.5,
+        'diaria': 120.34,
+        'cidade': 'Sao Paulo'
+    },
+]
+
+############################################################################

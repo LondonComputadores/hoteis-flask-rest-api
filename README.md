@@ -22,6 +22,7 @@ Esse é um curso completo de Flask REST API da Udemy com integração com banco 
 - python app.py
 - python cria_banco.py
 - pip install flask-SQLAlchemy
+- pip install Flask-JWT-Extended
 
 # Endpoints:
 

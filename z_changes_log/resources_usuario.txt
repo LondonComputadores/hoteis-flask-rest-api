@@ -1,0 +1,14 @@
+class UserRegister(Resource):
+    # endpoint /cadastro
+    def post(self):
+        atributos = reqparse.RequestParser()
+        atributos.add_argument('login', type=str, required=True, help="The field 'login' cannot be empty.")
+        atributos.add_argument('senha', type=str, required=True, help="The field 'senha' cannot be empty.")
+        dados = atributos.parse_args()
+
+        if UserModel.find_by_login(dados['login']):
+            return {"message": f"The login {(dados['login'])} already exists."}
+
+        user = UserModel(**dados)
+        user.save_user()
+        return {'message': 'User created succesfully!'}, 201

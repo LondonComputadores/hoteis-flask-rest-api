@@ -1,29 +1,7 @@
 from flask_restful import Resource, reqparse
 from models.hotel import HotelModel
+from flask_jwt_extended import jwt_required
 
-hoteis = [
-    {
-        'hotel_id': 'alpha',
-        'nome': 'Alpha Hotel',
-        'estrelas': 4.3,
-        'diaria': 420.34,
-        'cidade': 'Rio de Janeiro'
-    },
-    {
-        'hotel_id': 'bravo',
-        'nome': 'Bravo Hotel',
-        'estrelas': 3.7,
-        'diaria': 380.34,
-        'cidade': 'Florianopolis'
-    },
-    {
-        'hotel_id': 'espelunca',
-        'nome': 'Espelunca Hotel',
-        'estrelas': 2.5,
-        'diaria': 120.34,
-        'cidade': 'Sao Paulo'
-    },
-]
 
 class Hoteis(Resource):
     def get(self):
@@ -48,38 +26,31 @@ class Hotel(Resource):
             return hotel.json()
         return {'message': 'Hotel not found!'}, 404
 
+    @jwt_required
     def post(self, hotel_id):
         if HotelModel.find_hotel(hotel_id):
             return {"message": f"Hotel id {hotel_id} already exists."}, 400
-
         dados = Hotel.atributos.parse_args()
         hotel = HotelModel(hotel_id, **dados)
-        try:
-            hotel.save_hotel()
-        except:
-            return {'message': 'An internal error ocurred trying to save the hotel.'}, 500
+        hotel.save_hotel()
         return hotel.json(), 201
 
+    @jwt_required
     def put(self, hotel_id):
-        dados = Hotel.atributos.parse_args() 
+        dados = Hotel.atributos.parse_args()
+        hotel = HotelModel(hotel_id, **dados) 
         hotel_encontrado = HotelModel.find_hotel(hotel_id)
         if hotel_encontrado:
             hotel_encontrado.update_hotel(**dados)
             hotel_encontrado.save_hotel()
             return hotel_encontrado.json(), 200
-        hotel = HotelModel(hotel_id, **dados)
-        try:
-            hotel.save_hotel()
-        except:
-            return {'message': 'An internal error ocurred trying to save the hotel.'}, 500
+        hotel.save_hotel()
         return hotel.json(), 201
 
+    @jwt_required
     def delete(self, hotel_id):
         hotel = HotelModel.find_hotel(hotel_id)
         if hotel:
-            try:
-                hotel.delete_hotel()
-            except:
-                return {'message': 'An internal error ocurred trying to delete the hotel.'}, 500
+            hotel.delete_hotel()
             return {'message': 'Hotel deleted.'}
         return {'message': 'Hotel not found.'}, 404

@@ -28,6 +28,9 @@ Esse é um curso completo de Flask REST API da Udemy com integração com banco 
 
 - /hoteis
 - /hoteis/str:hotel_id
+- /usuarios/int:user_id
+- /cadastro
+- /login
 
 # Referências:
 
